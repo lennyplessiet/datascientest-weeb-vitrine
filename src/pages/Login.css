@@ -1,0 +1,72 @@
+.login-form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    width: 500px;
+}
+
+.login-form input[type="text"]{
+    width: 100%;
+    border: 1px solid transparent;
+    background-color: transparent;
+    text-align: center;
+    font-size: 20px;
+    font-family: Roboto;
+    font-weight: 400;
+    border-bottom: 1px solid var(--text-highlight);
+    padding: 10px;
+    color: var(--text-highlight);
+    transition: 0.3s ease-in-out;
+}
+
+.login-form input[type="text"]::placeholder{
+    color: var(--text-highlight);
+}
+
+.login-form input[type="text"]:focus{
+    outline: none;
+    border: 1px solid var(--text-highlight);
+}
+
+.login-form input[type="text"]:focus::placeholder{
+    color: transparent;
+}
+
+.login-form input[type="submit"]{
+    font-family: Roboto;
+    color: white;
+    background-color: var(--button-bg);
+    border: none;
+    padding: 15px 30px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    width: 300px;
+}
+
+.mdp-oublie{
+    margin-top: 30px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.5%;
+}
+
+.creer-compte{
+    font-size: 12px;
+    color: #C4C4C4;
+    font-weight: 500;
+    margin-top: 10px;
+    letter-spacing: 0.5px;
+}
+
+.creer-compte a{
+    text-decoration: underline;
+}
+
+@media only screen and (max-width: 768px){
+    .login-form{
+        width: 80%;
+    }
+}

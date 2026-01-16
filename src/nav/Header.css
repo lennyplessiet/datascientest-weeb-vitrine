@@ -1,0 +1,116 @@
+header{
+    display: flex;
+    justify-content: center;
+    padding-block: 24px;
+    height: 150px;
+}
+div.header{
+    background-color: var(--header-bg);
+    width: 70%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 20px;
+    box-shadow: 0px 0px 15px 0px #00000012;
+    box-shadow: 0px 25px 50px -12px #00000040;
+    padding: 24px;
+    position: fixed;
+}
+
+div.header-right, div.header-left{
+    display: flex;
+    gap: 35px;
+    align-items: center;
+}
+
+.mobile-header{
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 70px;
+    background-color: var(--header-bg);
+    position: fixed;
+    padding: 10px;
+}
+
+.mobile-header img{
+    height: 35px;
+}
+
+.mobile-header .burger-menu{
+    height: 45px;
+    width: 50px;
+    background-color: var(--button-bg);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+
+.mobile-header .burger-menu span{
+    width: 100%;
+    height: 4px;
+    border-radius: 10px;
+    background-color: #fff;
+    transition: 0.3s ease-in-out;
+    transform-origin: 50% 50%;
+}
+
+.mobile-header .burger-menu.open span:nth-child(1){
+    transform: translateY(10px) rotate(45deg);
+}
+
+.mobile-header .burger-menu.open span:nth-child(2){
+    opacity: 0;
+}
+.mobile-header .burger-menu.open span:nth-child(3){
+    transform: translateY(-10px) rotate(-45deg);
+
+}
+
+.mobile-panel{
+    position: fixed;
+    top: 70px;
+    left: -100%;
+    width: 100%;
+    height: calc(100% - 70px);
+    transition: 0.3s ease-in-out;
+}
+
+.mobile-panel.open{
+    left: 0;
+}
+
+.mobile-nav{
+    background-color: var(--header-bg);
+    height: 100%;
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+}
+
+.mobile-nav a{
+    font-size: 20px;
+    padding: 20px 20px;
+}
+.mobile-nav button{
+    width: 80%;
+    margin: 0 auto;
+}
+
+@media only screen and (max-width: 768px){
+    header{
+        padding: 0;
+        height: 50px;
+    }
+    div.header{
+        display: none;
+    }
+    .mobile-header{
+        display: flex;
+    }
+}
