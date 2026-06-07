@@ -1,5 +1,5 @@
 import Header from "../nav/Header"
-import Footer from "../nav/footer"
+import Footer from "../nav/Footer"
 
 import "./Contact.css"
 
