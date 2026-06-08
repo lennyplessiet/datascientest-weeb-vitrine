@@ -1,15 +1,25 @@
 import "./Header.css";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-import { getAuthSession } from "../api.js";
+import { getAuthSession, logout } from "../api.js";
 
 function Header() {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [session, setSession] = useState(() => getAuthSession());
 
   const handleMenu = () => {
-    setIsOpen(prev => !prev);
+    setIsOpen((prev) => !prev);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (err) {
+      // En cas d'erreur, on efface quand même la session locale
+    }
+    navigate("/login");
   };
 
   useEffect(() => {
@@ -45,7 +55,12 @@ function Header() {
 
         <div className="header-right">
           {session ? (
-            <p className="connected-user">Connecte en tant que {session.username}</p>
+            <>
+              <p className="connected-user">Connecté en tant que {session.username}</p>
+              <button className="logout-button" type="button" onClick={handleLogout}>
+                Se déconnecter
+              </button>
+            </>
           ) : (
             <>
               <div className="login-button">
@@ -78,7 +93,12 @@ function Header() {
             <Link to="/blog">Blog</Link>
             <Link to="/contact">Contact</Link>
             {session ? (
-              <p className="connected-user">Connecte en tant que {session.username}</p>
+              <>
+                <p className="connected-user">Connecté en tant que {session.username}</p>
+                <button className="mobile-logout-button" type="button" onClick={() => { handleLogout(); setIsOpen(false); }}>
+                  Se déconnecter
+                </button>
+              </>
             ) : (
               <>
                 <Link to="/login">Login</Link>

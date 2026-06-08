@@ -27,7 +27,6 @@ function Login() {
 
       saveAuthSession({
         access: data.access,
-        refresh: data.refresh,
         username: email,
       });
 

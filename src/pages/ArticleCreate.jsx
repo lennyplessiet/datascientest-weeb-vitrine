@@ -29,7 +29,6 @@ function ArticleCreate() {
     try {
       const article = await apiRequest("/article/", {
         method: "POST",
-        headers: { Authorization: `Bearer ${session.access}` },
         body: JSON.stringify(form),
       });
       navigate(`/blog/${article.id}`);

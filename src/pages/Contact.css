@@ -13,7 +13,7 @@ form.contact-form .form-row{
     gap: 30px;
 }
 
-form.contact-form input[type="text"], form.contact-form textarea{
+form.contact-form input[type="text"], form.contact-form input[type="email"], form.contact-form textarea{
     border: 1px solid transparent;
     background-color: transparent;
     text-align: center;
@@ -26,16 +26,16 @@ form.contact-form input[type="text"], form.contact-form textarea{
     transition: 0.3s ease-in-out;
 }
 
-form.contact-form input[type="text"]::placeholder,  form.contact-form textarea::placeholder{
+form.contact-form input[type="text"]::placeholder, form.contact-form input[type="email"]::placeholder, form.contact-form textarea::placeholder{
     color: var(--text-highlight);
 }
 
-form.contact-form input[type="text"]:focus, form.contact-form textarea:focus{
+form.contact-form input[type="text"]:focus, form.contact-form input[type="email"]:focus, form.contact-form textarea:focus{
     outline: none;
     border: 1px solid var(--text-highlight);
 }
 
-form.contact-form input[type="text"]:focus::placeholder, form.contact-form textarea:focus::placeholder{
+form.contact-form input[type="text"]:focus::placeholder, form.contact-form input[type="email"]:focus::placeholder, form.contact-form textarea:focus::placeholder{
     color: transparent;
 }
 
