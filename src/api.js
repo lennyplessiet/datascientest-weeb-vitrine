@@ -2,8 +2,19 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000
 const AUTH_STORAGE_KEY = "authUser";
 const ACCESS_STORAGE_KEY = "access";
 
+/**
+ * Construit une URL d'API en évitant les doubles slashs.
+ * Ex : buildApiUrl("https://back.onrender.com/", "/api/users/signup/")
+ *      -> "https://back.onrender.com/api/users/signup/"
+ */
+export function buildApiUrl(baseUrl, path) {
+  const base = String(baseUrl || "").replace(/\/+$/, "");
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  return `${base}${normalizedPath}`;
+}
+
 export function apiUrl(path) {
-  return `${API_BASE_URL}${path}`;
+  return buildApiUrl(API_BASE_URL, path);
 }
 
 function parseResponse(response) {

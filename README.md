@@ -32,7 +32,8 @@ Couverture :
 
 - `src/nav/Header.test.jsx`, `src/nav/Footer.test.jsx` : rendu, assets, navigation, menu mobile ;
 - `src/pages/Accueil.test.jsx` : contenu et images ;
-- `src/test/routes.test.jsx` : les 3 routes (`/`, `/contact`, `/login`) via `createMemoryRouter` ;
+- `src/test/routes.test.jsx` : les 8 routes (`/`, `/contact`, `/blog`, `/blog/:id`, `/blog/ajouter`, `/password-reset`, `/login`, `/signup`) via `createMemoryRouter` ;
+- `src/api.test.js` : construction des URLs du back-end (slash final, chemin sans slash) ;
 - `src/lib/sentry.test.js` : Sentry désactivé sans DSN, configuration sinon ;
 - `src/test/imports.test.js` : **garde-fous de déploiement** — casse exacte des imports (Linux/Vercel), absence de chemins d'assets en dur, `vercel.json`, version de Node.
 
@@ -45,7 +46,26 @@ Couverture :
    { "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }] }
    ```
 
-3. Variables d'environnement (facultatives) : voir `.env.example` — au minimum `VITE_SENTRY_DSN`.
+3. Variables d'environnement (Project → Settings → Environment Variables) :
+
+   | Variable | Obligatoire | Valeur |
+   | --- | --- | --- |
+   | `VITE_API_BASE_URL` | **oui** (dès que le back est en ligne) | URL du back **sans slash final**, ex. `https://weeb-backend-plessiet-zeroual.onrender.com` |
+   | `VITE_SENTRY_DSN` | non | DSN du projet Sentry |
+
+   Sans `VITE_API_BASE_URL`, `src/api.js` retombe sur `http://localhost:8000` : tous les appels (blog, auth, contact) échouent en production. Les slashs finaux sont retirés automatiquement par `buildApiUrl`.
+
+4. Back-end (Django/DRF) : autoriser l'origine Vercel en CORS, **avec credentials** (le refresh token est un cookie httpOnly envoyé via `credentials: "include"`) :
+
+   ```python
+   CORS_ALLOWED_ORIGINS = ["https://datascientest-weeb-vitrine.vercel.app"]
+   CORS_ALLOW_CREDENTIALS = True
+   CSRF_TRUSTED_ORIGINS = ["https://datascientest-weeb-vitrine.vercel.app"]
+   # Previews Vercel (URLs du type ...-git-main-...vercel.app)
+   CORS_ALLOWED_ORIGIN_REGEXES = [r"^https://datascientest-weeb-vitrine-.*\.vercel\.app$"]
+   ```
+
+   `django-cors-headers` doit être dans `INSTALLED_APPS` et `CorsMiddleware` placé **avant** `CommonMiddleware`. Front et back étant sur deux domaines différents, le cookie de refresh doit être émis en `SameSite=None; Secure` (sinon le navigateur ne l'envoie pas).
 
 ## Sentry
 
