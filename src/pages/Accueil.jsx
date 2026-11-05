@@ -1,6 +1,14 @@
 import Header from "../nav/Header"
 import Footer from "../nav/Footer"
 
+import desktopImage from "../assets/Desktop.svg"
+import shapesImage from "../assets/Shapes.svg"
+import smartfinderLogo from "../assets/smartfinder-logo.svg"
+import zoomerrLogo from "../assets/zoomerr-logo.svg"
+import shellsLogo from "../assets/shells-logo.svg"
+import wavesLogo from "../assets/waves-logo.svg"
+import artvenueLogo from "../assets/artvenue-logo.svg"
+
 import "./Accueil.css"
 
 function Accueil(){
@@ -15,29 +23,29 @@ function Accueil(){
                         <button>Découvrir les articles</button>
                         <button className="button-white">S'abonner à la newsletter</button>
                     </div>
-                    <img src="/src/assets/Desktop.svg" alt="Desktop" />
+                    <img src={desktopImage} alt="Desktop" />
                 </section>
                 <section className="center">
                     <h2>Ils nous font confiance</h2>
                     <div className="logo-row">
                         <div className="logo">
-                            <img src="/src/assets/smartfinder-logo.svg" alt="smartfinder-logo" />
+                            <img src={smartfinderLogo} alt="smartfinder-logo" />
                             <p>SmartFinder</p>
                         </div>
                         <div className="logo">
-                            <img src="/src/assets/zoomerr-logo.svg" alt="zoomerr-logo" />
+                            <img src={zoomerrLogo} alt="zoomerr-logo" />
                             <p>Zoomerr</p>
                         </div>
                         <div className="logo">
-                            <img src="/src/assets/shells-logo.svg" alt="shells-logo" />
+                            <img src={shellsLogo} alt="shells-logo" />
                             <p>Shells</p>
                         </div>
                         <div className="logo">
-                            <img src="/src/assets/waves-logo.svg" alt="waves-logo" />
+                            <img src={wavesLogo} alt="waves-logo" />
                             <p>Waves</p>
                         </div>
                         <div className="logo">
-                            <img src="/src/assets/artvenue-logo.svg" alt="artvenue-logo" />
+                            <img src={artvenueLogo} alt="artvenue-logo" />
                             <p>ArtVenue</p>
                         </div>
                     </div>
@@ -51,14 +59,14 @@ function Accueil(){
                             <a href="#" className="call-to-action">Explorer les ressources</a>
                         </div>
                         <div className="column-50">
-                            <img src="/src/assets/Desktop.svg" alt="Desktop" />
+                            <img src={desktopImage} alt="Desktop" />
                         </div>
                     </div>
                 </section>
                 <section>
                     <div className="row gap-80">
                         <div className="column-30">
-                            <img src="/src/assets/Shapes.svg" alt="Shapes" />
+                            <img src={shapesImage} alt="Shapes" />
                         </div>
                         <div className="column-70">
                             <p className="pre-title">Le web, un écosystème en constante évolution</p>

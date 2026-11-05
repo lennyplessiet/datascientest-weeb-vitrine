@@ -1,32 +1,36 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import * as Sentry from "@sentry/react";
 
-import Accueil from "./pages/Accueil";
-import Contact from "./pages/Contact.jsx";
-import Login from "./pages/Login";
+import { routes } from "./routes";
+import { initSentry } from "./lib/sentry";
 
 import "./index.css"
 
-// Définir les routes avec createBrowserRouter
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Accueil />,
-  },
-  {
-    path: "contact",
-    element: <Contact />,
-  },
-  {
-    path: "login",
-    element: <Login />,
-  },
-]);
+// À appeler avant le premier rendu pour capter les erreurs de démarrage.
+// Sans VITE_SENTRY_DSN, cette fonction ne fait rien.
+initSentry();
 
-// Intégrer le router dans votre application
-ReactDOM.createRoot(document.getElementById("root")).render(
+const router = createBrowserRouter(routes);
+
+ReactDOM.createRoot(document.getElementById("root"), {
+  // Sentry récupère aussi les erreurs React 19 (rendu, effets, hydratation).
+  onCaughtError: Sentry.reactErrorHandler(),
+  onUncaughtError: Sentry.reactErrorHandler(),
+  onRecoverableError: Sentry.reactErrorHandler(),
+}).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <Sentry.ErrorBoundary
+      fallback={({ resetError }) => (
+        <div className="error-fallback">
+          <h1>Une erreur inattendue est survenue</h1>
+          <p>Le problème a été enregistré. Vous pouvez réessayer.</p>
+          <button onClick={resetError}>Réessayer</button>
+        </div>
+      )}
+    >
+      <RouterProvider router={router} />
+    </Sentry.ErrorBoundary>
   </React.StrictMode>
 );

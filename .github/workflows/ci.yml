@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Annule les exécutions en cours quand on repousse sur la même branche
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Lint, tests et build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CI: true
+    steps:
+      - name: Récupération du code
+        uses: actions/checkout@v4
+
+      - name: Installation de Node.js
+        uses: actions/setup-node@v4
+        with:
+          # Doit rester >= 20.19 (exigence de Vite 7) ; Vercel utilise Node 22
+          node-version: 22
+          cache: npm
+
+      - name: Installation des dépendances
+        run: npm ci
+
+      - name: Lint (ESLint)
+        run: npm run lint
+
+      - name: Tests unitaires (Vitest)
+        run: npm test
+
+      - name: Build de production (Vite)
+        run: npm run build
+
+      # Garde-fou : un chemin /src/assets en dur casserait toutes les images en prod
+      - name: Vérification des assets du build
+        run: |
+          if grep -rIl "src/assets" dist; then
+            echo "::error::Le build contient des chemins /src/assets (images cassées en production)"
+            exit 1
+          fi
+          echo "Aucun chemin /src/assets dans dist ✓"
+
+      - name: Publication du build
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ github.sha }}
+          path: dist
+          retention-days: 7
