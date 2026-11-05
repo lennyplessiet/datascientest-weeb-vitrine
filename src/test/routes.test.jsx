@@ -26,7 +26,16 @@ describe("routage client", () => {
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Se connecter");
   });
 
-  it("déclare bien les 3 routes attendues", () => {
-    expect(routes.map((route) => route.path)).toEqual(["/", "contact", "login"]);
+  it("déclare bien toutes les routes attendues", () => {
+    expect(routes.map((route) => route.path)).toEqual([
+      "/",
+      "contact",
+      "blog",
+      "blog/ajouter",
+      "blog/:id",
+      "password-reset",
+      "login",
+      "signup",
+    ]);
   });
 });

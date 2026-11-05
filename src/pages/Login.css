@@ -6,7 +6,31 @@
     width: 500px;
 }
 
-.login-form input[type="text"]{
+.auth-section{
+    min-height: 52vh;
+    justify-content: center;
+}
+
+.auth-section h1{
+    width: 100%;
+}
+
+.auth-form{
+    background-color: var(--form-bg);
+    border: 2px solid var(--form-primary);
+    border-radius: 8px;
+    padding: 30px 50px;
+    width: min(560px, 100%);
+}
+
+.auth-row{
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    width: 100%;
+}
+
+.login-form input[type="text"], .login-form input[type="email"], .login-form input[type="password"]{
     width: 100%;
     border: 1px solid transparent;
     background-color: transparent;
@@ -20,16 +44,16 @@
     transition: 0.3s ease-in-out;
 }
 
-.login-form input[type="text"]::placeholder{
+.login-form input[type="text"]::placeholder, .login-form input[type="email"]::placeholder, .login-form input[type="password"]::placeholder{
     color: var(--text-highlight);
 }
 
-.login-form input[type="text"]:focus{
+.login-form input[type="text"]:focus, .login-form input[type="email"]:focus, .login-form input[type="password"]:focus{
     outline: none;
     border: 1px solid var(--text-highlight);
 }
 
-.login-form input[type="text"]:focus::placeholder{
+.login-form input[type="text"]:focus::placeholder, .login-form input[type="email"]:focus::placeholder, .login-form input[type="password"]:focus::placeholder{
     color: transparent;
 }
 
@@ -65,8 +89,26 @@
     text-decoration: underline;
 }
 
+.form-message{
+    margin-top: 24px;
+    max-width: 620px;
+}
+
+.form-message.error{
+    color: #fca5a5;
+}
+
 @media only screen and (max-width: 768px){
     .login-form{
         width: 80%;
+    }
+
+    .auth-form{
+        width: 100%;
+        padding: 24px;
+    }
+
+    .auth-row{
+        grid-template-columns: 1fr;
     }
 }

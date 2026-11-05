@@ -1,15 +1,39 @@
 import "./Header.css";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
+import { getAuthSession, logout } from "../api.js";
 import weebLogo from "../assets/weeb.svg";
 
 function Header() {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const [session, setSession] = useState(() => getAuthSession());
 
   const handleMenu = () => {
-    setIsOpen(prev => !prev);
+    setIsOpen((prev) => !prev);
   };
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch {
+      // En cas d'erreur, on efface quand même la session locale
+    }
+    navigate("/login");
+  };
+
+  useEffect(() => {
+    const syncSession = () => setSession(getAuthSession());
+
+    window.addEventListener("auth-change", syncSession);
+    window.addEventListener("storage", syncSession);
+
+    return () => {
+      window.removeEventListener("auth-change", syncSession);
+      window.removeEventListener("storage", syncSession);
+    };
+  }, []);
 
   return (
     <header>
@@ -22,18 +46,32 @@ function Header() {
           </div>
           <nav>
             <div className="nav-item">
+              <Link to="/blog">Blog</Link>
+            </div>
+            <div className="nav-item">
               <Link to="/contact">Contact</Link>
             </div>
           </nav>
         </div>
 
         <div className="header-right">
-          <div className="login-button">
-            <Link to="/login">Log In</Link>
-          </div>
-          <div className="joinnow-button">
-            <button>Join Now</button>
-          </div>
+          {session ? (
+            <>
+              <p className="connected-user">Connecté en tant que {session.username}</p>
+              <button className="logout-button" type="button" onClick={handleLogout}>
+                Se déconnecter
+              </button>
+            </>
+          ) : (
+            <>
+              <div className="login-button">
+                <Link to="/login">Log In</Link>
+              </div>
+              <div className="joinnow-button">
+                <Link to="/signup">Join Now</Link>
+              </div>
+            </>
+          )}
         </div>
       </div>
 
@@ -53,9 +91,21 @@ function Header() {
 
         <div className={`mobile-panel ${isOpen ? "open" : ""}`}>
           <div className="mobile-nav">
+            <Link to="/blog">Blog</Link>
             <Link to="/contact">Contact</Link>
-            <Link to="/login">Login</Link>
-            <button>Join Now</button>
+            {session ? (
+              <>
+                <p className="connected-user">Connecté en tant que {session.username}</p>
+                <button className="mobile-logout-button" type="button" onClick={() => { handleLogout(); setIsOpen(false); }}>
+                  Se déconnecter
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/login">Login</Link>
+                <Link className="mobile-join-link" to="/signup">Join Now</Link>
+              </>
+            )}
           </div>
         </div>
       </div>
