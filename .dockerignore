@@ -1,0 +1,26 @@
+# Dépendances et artefacts locaux (reconstruits dans l'image)
+node_modules
+dist
+dist-ssr
+.tmp-build
+coverage
+
+# Git / CI / éditeurs
+.git
+.gitignore
+.github
+.vscode
+.idea
+*.suo
+*.sw?
+
+# Environnement : les VITE_* passent par des build args, jamais par un .env copié
+.env
+.env.*
+!.env.example
+
+# Divers
+*.log
+README.md
+vercel.json
+docker-compose*.yml

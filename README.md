@@ -67,6 +67,45 @@ Couverture :
 
    `django-cors-headers` doit être dans `INSTALLED_APPS` et `CorsMiddleware` placé **avant** `CommonMiddleware`. Front et back étant sur deux domaines différents, le cookie de refresh doit être émis en `SameSite=None; Secure` (sinon le navigateur ne l'envoie pas).
 
+## Docker (image Docker Hub)
+
+Image en deux étapes : `node:22-alpine` compile l'application, puis `nginx:1.27-alpine` sert le `dist/` (config [docker/nginx.conf](docker/nginx.conf) : fallback SPA, cache des assets hashés, compression, en-têtes de sécurité). Aucun Node ni `node_modules` dans l'image finale.
+
+```bash
+# Construction locale (Docker Desktop requis)
+docker build \
+  --build-arg VITE_API_BASE_URL=https://weeb-backend-plessiet-zeroual.onrender.com \
+  -t <ton-user-dockerhub>/datascientest-weeb-vitrine:latest .
+
+# Lancement
+docker run --rm -p 8080:80 <ton-user-dockerhub>/datascientest-weeb-vitrine:latest
+# -> http://localhost:8080
+```
+
+Publication manuelle :
+
+```bash
+docker login
+docker push <ton-user-dockerhub>/datascientest-weeb-vitrine:latest
+```
+
+### Publication automatique à chaque modification GitHub
+
+Le job `docker` de [.github/workflows/ci.yml](.github/workflows/ci.yml) construit et pousse l'image **après** que le lint, les tests et le build sont passés, à chaque push sur `main` (et sur un tag `v*`). L'option « Automated builds » de Docker Hub (liaison directe à un dépôt Git) n'est pas disponible sur les offres gratuites : ce workflow la remplace et a l'avantage de ne publier que du code vert.
+
+À configurer une fois, dans GitHub → Settings → Secrets and variables → Actions :
+
+| Type | Nom | Valeur |
+| --- | --- | --- |
+| Secret | `DOCKERHUB_USERNAME` | identifiant Docker Hub |
+| Secret | `DOCKERHUB_TOKEN` | token d'accès **Read & Write** (Docker Hub → Account settings → Security → New access token) |
+| Variable | `VITE_API_BASE_URL` | URL du back, sans slash final |
+| Variable | `VITE_SENTRY_DSN` | (optionnel) DSN Sentry |
+
+Les `VITE_*` sont des valeurs **publiques** (inlinées dans le bundle du navigateur) → à mettre en *variables*, pas en secrets. Tags produits : `latest` (branche `main`), nom de branche, `sha-xxxxxxx`, et `1.2.3` pour un tag `v1.2.3`.
+
+⚠️ Vite fige les `VITE_*` **au moment du `docker build`** : changer de back-end impose de reconstruire l'image. C'est une contrainte de Vite, pas de Docker (une config lue à l'exécution serait nécessaire pour rendre l'image portable).
+
 ## Sentry
 
 `src/lib/sentry.js` initialise Sentry **seulement si** `VITE_SENTRY_DSN` est défini : sans DSN, le site fonctionne normalement (aucun envoi).
