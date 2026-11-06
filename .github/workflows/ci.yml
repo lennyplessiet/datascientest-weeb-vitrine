@@ -63,19 +63,47 @@ jobs:
           retention-days: 7
 
   # ---------------------------------------------------------------------------
+  # Vérifie que Docker Hub est configuré (sinon la publication est sautée)
+  # ---------------------------------------------------------------------------
+  docker-config:
+    name: Config Docker Hub
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: quality
+    if: github.event_name != 'pull_request'
+    outputs:
+      configured: ${{ steps.check.outputs.configured }}
+      username: ${{ steps.check.outputs.username }}
+    steps:
+      - name: Vérification des secrets
+        id: check
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          if [ -n "$DOCKERHUB_USERNAME" ] && [ -n "$DOCKERHUB_TOKEN" ]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+            echo "username=$DOCKERHUB_USERNAME" >> "$GITHUB_OUTPUT"
+            echo "Secrets Docker Hub détectés : la publication est activée."
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::notice title=Docker Hub::Secrets DOCKERHUB_USERNAME / DOCKERHUB_TOKEN absents : publication de l'image ignorée."
+          fi
+
+  # ---------------------------------------------------------------------------
   # Publication de l'image sur Docker Hub (uniquement si les tests passent)
   # ---------------------------------------------------------------------------
   docker:
     name: Image Docker Hub
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    needs: quality
+    needs: [quality, docker-config]
     # Jamais depuis une PR (secrets indisponibles) ni depuis un fork
-    if: github.event_name != 'pull_request'
+    if: github.event_name != 'pull_request' && needs.docker-config.outputs.configured == 'true'
     permissions:
       contents: read
     env:
-      IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/datascientest-weeb-vitrine
+      IMAGE_NAME: ${{ needs.docker-config.outputs.username }}/datascientest-weeb-vitrine
     steps:
       - name: Récupération du code
         uses: actions/checkout@v4

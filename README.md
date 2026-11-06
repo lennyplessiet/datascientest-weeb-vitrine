@@ -104,6 +104,8 @@ Le job `docker` de [.github/workflows/ci.yml](.github/workflows/ci.yml) construi
 
 Les `VITE_*` sont des valeurs **publiques** (inlinées dans le bundle du navigateur) → à mettre en *variables*, pas en secrets. Tags produits : `latest` (branche `main`), nom de branche, `sha-xxxxxxx`, et `1.2.3` pour un tag `v1.2.3`.
 
+Tant que les deux secrets Docker Hub sont absents, le job `Config Docker Hub` le signale (notice) et le job de publication est **sauté** — la CI reste verte, seuls le lint, les tests et le build tournent.
+
 ⚠️ Vite fige les `VITE_*` **au moment du `docker build`** : changer de back-end impose de reconstruire l'image. C'est une contrainte de Vite, pas de Docker (une config lue à l'exécution serait nécessaire pour rendre l'image portable).
 
 ## Sentry
